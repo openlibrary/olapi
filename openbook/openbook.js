@@ -109,7 +109,6 @@ function setup_openbook(bibkey, book) {
             + '<img class="openbook-cover"'
             +     ' title="TITLE"'
             +     ' src="http://covers.openlibrary.org/b/olid/OLN-M.jpg"'
-            +     ' style="float: left; border: 0px none; padding: 0px 10px 10px 15px;"'
             +     ' onerror="this.style.padding = \'0px\';"'
             + ' />'
             + '</a>';
@@ -117,30 +116,30 @@ function setup_openbook(bibkey, book) {
     }
     
     function make_title() {
-        var out = '<b><a target="_blank" title="Click to view title in Open Library" href="http://openlibrary.org/b/OLN"><i>TITLE</i></a></b>';
+        var out = '<a class="openbook-title" target="_blank" title="Click to view title in Open Library" href="http://openlibrary.org/b/OLN">TITLE</a>';
         return out.replace("OLN", book.oln).replace("TITLE", book.full_title);
     }
     
     function make_author() {
         if (book.authors) {
-            var t = ', <a target="_blank" href="http://openlibrary.orgKEY" title="Click to view author in Open Library">NAME</a>'
-            var out = "";            
+            var t = ', <a class="openbook-author" target="_blank" href="http://openlibrary.orgKEY" title="Click to view author in Open Library">NAME</a>'
+            var out = "";
             for (var i in book.authors) {
                 var a = book.authors[i];
                 out += t.replace("KEY", a.key).replace("NAME", a.name);
             }
-            return "<b>" + out + "</b>"
         }
         else if (book.alternate_authors) {
-            return "<b>, " + book.alternate_authors + "</b>";
+            out = ", " + book.alternate_authors;
         }
         else
-            return "";
+            out = "";
+        return '<span class="openbook-authors">' + out + '</span>'; 
     }
     
     function make_publisher() {
         if (book.publisher)
-            return "; " + book.publisher;
+            return '; <span class="openbook-publisher">' + book.publisher + '</span>';
         else
             return "";
     }
