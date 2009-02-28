@@ -18,6 +18,12 @@ import simplejson
 import datetime
 import re
 
+class OLError(Exception):
+    def __init__(self, http_error):
+        self.headers = http_error.headers
+        msg = http_error.msg + ": " + http_error.read()
+        Exception.__init__(self, msg)
+
 class OpenLibrary:
     def __init__(self, base_url="http://openlibrary.org"):
         self.base_url = base_url
@@ -30,9 +36,12 @@ class OpenLibrary:
         if self.cookie:
             headers['Cookie'] = self.cookie
         
-        req = urllib2.Request(url, data, headers)
-        req.get_method = lambda: method
-        return urllib2.urlopen(req)
+        try:
+            req = urllib2.Request(url, data, headers)
+            req.get_method = lambda: method
+            return urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            raise OLError(e)
 
     def login(self, username, password):
         """Login to Open Library with given credentials.
@@ -58,19 +67,26 @@ class OpenLibrary:
         data["_comment"] = comment
         data = simplejson.dumps(data)
         return self._request(key, method="PUT", data=data, headers=headers).read()
-
-    def save_many(self, query, comment=None, action=None):
+        
+    def _call_write(self, name, query, comment, action):
         headers = {'Content-Type': 'application/json'}
         query = marshal(query)
-        data = dict(query=simplejson.dumps(query), comment=comment, action=action)
-        return self._request("/api/save_many", method="POST", data=urllib.urlencode(data)).read()
+        if comment:
+            headers['X-OL-comment'] = comment
+        if action:
+            headers['X-OL-action'] = action            
+        response = self._request('/api/' + name, method="POST", data=simplejson.dumps(query), headers=headers)
+        return simplejson.loads(response.read())
+
+    def save_many(self, query, comment=None, action=None):
+        return self._call_write('save_many', query, comment, action)
         
     def write(self, query, comment="", action=""):
         """Internal write API."""
-        query = marshal(query)
-        data = dict(query=simplejson.dumps(query), comment=comment, action=action)
-        response = self._request('/api/write', method='POST', data=urllib.urlencode(data))
-        return simplejson.loads(response.read())
+        return self._call_write('write', query, comment, action)
+
+    def new(self, query, comment=None, action=None):
+        return self._call_write('new', query, comment, action)
 
 def marshal(data):
     """Serializes the specified data in the format required by OL.
