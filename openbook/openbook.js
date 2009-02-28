@@ -45,12 +45,15 @@ function build_coins(book) {
 function process_book(bibkey, book) {
     // delete empty values
     for (var k in book) {
-        if (book[k].length == 0)
+        if (book[k] && book[k].length == 0)
             delete book[k];
     }
     
     // oln
     book.oln = book.key.replace('/b/', '');
+    
+    if (book.title_prefix)
+        book.title = book.title_prefix + ' ' + book.title;
     
     // full_title
     if (book.subtitle)
@@ -84,12 +87,12 @@ function process_book(bibkey, book) {
     // tooltip
     book.tooltip = "";
     
-    if (book.first_sentence)
-        book.tooltip += "First Sentence: " + book.first_sentence + " ";
-    if (book.description)
-        book.tooltip += "Description: " + book.description + " ";
-    if (book.notes)
-        book.tooltip += "Notes: " + book.notes + " ";
+    if (book.first_sentence && book.first_sentence.value)
+        book.tooltip += "First Sentence: " + book.first_sentence.value + " ";
+    if (book.description && book.description.value)
+        book.tooltip += "Description: " + book.description.value + " ";
+    if (book.notes && book.notes.value)
+        book.tooltip += "Notes: " + book.notes.value + " ";
         
     if (book.tooltip == "")
         book.tooltip = "Click to view title in Open Library"
