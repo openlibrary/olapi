@@ -168,7 +168,7 @@ function setup_openbook(bibkey, book) {
 jQuery(document).ready(function() {
     var bibkeys = $.map($(".openbook"), function(div) { return $(div).attr("booknumber"); });
 
-    $.getJSON("http://openlibrary.org:8080/api/books?bibkeys=" + bibkeys.join(",") + "&details=true&callback=?", function(data){
+    $.getJSON("http://openlibrary.org/api/books?bibkeys=" + bibkeys.join(",") + "&details=true&callback=?", function(data){
         for (var k in data)
             setup_openbook(k, data[k].details);
     });
