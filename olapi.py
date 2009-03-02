@@ -71,10 +71,15 @@ class OpenLibrary:
     def _call_write(self, name, query, comment, action):
         headers = {'Content-Type': 'application/json'}
         query = marshal(query)
+
+        # use HTTP Extension Framework to add custom headers. see RFC 2774 for more details.
+        if comment or action:
+            headers['Opt'] = '"http://openlibrary.org/dev/docs/api"; ns=42'
         if comment:
-            headers['X-OL-comment'] = comment
+            headers['42-comment'] = comment
         if action:
-            headers['X-OL-action'] = action            
+            headers['42-action'] = action
+
         response = self._request('/api/' + name, method="POST", data=simplejson.dumps(query), headers=headers)
         return simplejson.loads(response.read())
 
