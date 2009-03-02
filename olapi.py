@@ -64,7 +64,9 @@ class OpenLibrary:
     def save(self, key, data, comment=None):
         headers = {'Content-Type': 'application/json'}
         data = marshal(data)
-        data["_comment"] = comment
+        if comment:
+            headers['Opt'] = '"http://openlibrary.org/dev/docs/api"; ns=42'
+            headers['42-comment'] = comment
         data = simplejson.dumps(data)
         return self._request(key, method="PUT", data=data, headers=headers).read()
         
