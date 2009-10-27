@@ -8,8 +8,8 @@ It uses [Open Library Books API](http://openlibrary.org/dev/docs/api/books) to g
 
 Include `jquery.js` and `openbook.js` javascripts and `openbook.css` stylesheet in head of the html.
 
-    <script src="http://openlibrary.org/static/js/jquery/jquery.js"></script>
-    <script src="http://openlibrary.org/static/openbook/openbook.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://openlibrary.org/static/openbook/openbook.js"></script>
     <link rel="stylesheet" type="text/css" href="http://openlibrary.org/static/openbook/openbook.css"/>
 
 And add a div with class `openbook` with `booknumber` attribute set to isbn of the required book.
