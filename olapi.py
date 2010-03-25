@@ -1,6 +1,8 @@
 r"""Open Library API Client.
 
-    ol = OpenLibrary("http://0.0.0.0:8080")
+    from olapi import OpenLibrary
+
+    ol = OpenLibrary()
     ol.login('joe', 'secret')
     
     page = ol.get("/sandbox")
